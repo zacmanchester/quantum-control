@@ -42,4 +42,4 @@ solver = solve!(prob, iLQRSolverOptions{Float64}(square_root=true, cost_toleranc
 
 plotly()
 plot(prob.X,xlabel="time step",title="State Trajectory",label=["Re(x1)" "Im(x1)" "Re(x2)" "Im(x2)"])
-plot(prob.U,xlabel="time step",title="Control Trajectory")
+plot(prob.U,xlabel="time step",title="Control Trajectory",label="u1")
