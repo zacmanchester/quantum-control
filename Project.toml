@@ -1,0 +1,4 @@
+name = "QuantumControl"
+uuid = "28a01ab3-2b1e-40f7-9d2f-bc4146829989"
+authors = ["Brian Jackson <bjack205@gmail.com>", "Zachary Manchester <zacmanchester@stanford.edu>"]
+version = "0.1.0"
