@@ -4,7 +4,11 @@ authors = ["Brian Jackson <bjack205@gmail.com>", "Zachary Manchester <zacmanches
 version = "0.1.0"
 
 [deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 RobotDynamics = "38ceca67-d8d3-44e8-9852-78a5596522e1"
 Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
 TrajOptCore = "6e71adf8-10e1-430f-8fc1-65a685ba327f"
+TrajOptPlots = "7770976a-8dee-4930-bf39-a1782fd21ce6"
 TrajectoryOptimization = "c79d492b-0548-5874-b488-5a62c1d9d0ca"
