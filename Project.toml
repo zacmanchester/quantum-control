@@ -2,3 +2,9 @@ name = "QuantumControl"
 uuid = "28a01ab3-2b1e-40f7-9d2f-bc4146829989"
 authors = ["Brian Jackson <bjack205@gmail.com>", "Zachary Manchester <zacmanchester@stanford.edu>"]
 version = "0.1.0"
+
+[deps]
+RobotDynamics = "38ceca67-d8d3-44e8-9852-78a5596522e1"
+Rotations = "6038ab10-8711-5258-84ad-4b1120ba62dc"
+TrajOptCore = "6e71adf8-10e1-430f-8fc1-65a685ba327f"
+TrajectoryOptimization = "c79d492b-0548-5874-b488-5a62c1d9d0ca"
