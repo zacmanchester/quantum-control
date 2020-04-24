@@ -1,5 +1,5 @@
 import Pkg
-Pkg.add(PackageSpec(name="Rotations", url="https://github.com/bjack205/Rotations.jl.git"))
+Pkg.add(PackageSpec(name="Rotations", rev="master"))
 Pkg.add(PackageSpec(name="RobotDynamics", url="https://github.com/RoboticExplorationLab/RobotDynamics.jl.git"))
 Pkg.add(PackageSpec(name="RobotZoo", url="https://github.com/bjack205/RobotZoo.jl.git"))
 Pkg.add(PackageSpec(name="TrajOptCore", url="https://github.com/RoboticExplorationLab/TrajOptCore.jl.git"))

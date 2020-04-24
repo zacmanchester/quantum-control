@@ -7,6 +7,8 @@ using Rotations
 using TrajOptPlots
 using LaTeXStrings
 
+import RobotDynamics.LieState
+
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #                                 Set up Model
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -23,7 +25,10 @@ RobotDynamics.orientation(::Qubit, x::AbstractVector) = UnitQuaternion(x[1], x[2
 
 RobotDynamics.state_diff_size(::Qubit{D,N}) where {D,N} = 3+D+N
 
-function RobotDynamics.state_diff(::Qubit{D,N}, x::SVector, x0::SVector) where {D,N}
+RobotDynamics.LieState(::Qubit{D,N}) where {D,N} = RobotDynamics.LieState(UnitQuaternion{Float64},(0,D+N))
+
+function RobotDynamics.state_diff(model::Qubit{D,N}, x::SVector, x0::SVector) where {D,N}
+    return RobotDynamics.state_diff(LieState(model), x, x0)
     q  = UnitQuaternion(x[1], x[2], x[3], x[4])
     q0 = UnitQuaternion(x0[1], x0[2], x0[3], x0[4])
     δq = q ⊖ q0
@@ -33,6 +38,7 @@ function RobotDynamics.state_diff(::Qubit{D,N}, x::SVector, x0::SVector) where {
 end
 
 function RobotDynamics.state_diff_jacobian!(G, model::Qubit, x::SVector)
+    return RobotDynamics.state_diff_jacobian!(G, LieState(model), x)
     q = orientation(model, x)
     G0 = Rotations.∇differential(q)
     G[1:4, 1:3] .= G0
@@ -43,6 +49,7 @@ function RobotDynamics.state_diff_jacobian!(G, model::Qubit, x::SVector)
 end
 
 function RobotDynamics.∇²differential!(∇G, model::Qubit, x::SVector, dx::AbstractVector)
+    return RobotDynamics.∇²differential!(∇G, LieState(model), x, dx)
     q  = orientation(model, x)
     dq = Rotations.params(orientation(model, dx))
     # q = UnitQuaternion(x[1], x[2], x[3], x[4])
@@ -217,7 +224,7 @@ obj = LQRObjective(Q,R,Qf,xf,N,checks=false)
 # Solve unconstrained problem
 prob = Problem(model, obj, xf, tf, x0=x0, U0=U0)
 solver = iLQRSolver(prob)
-benchmark_solve!(solver)
+# benchmark_solve!(solver)
 solver.opts.verbose = true
 solve!(solver)
 err = rotation_angle(UnitQuaternion(states(solver)[end][1:4])\UnitQuaternion(xf[1:4]))
@@ -231,3 +238,24 @@ plot(t,states(solver),6:6, xlabel="time (s)", ylabel=L"u", label="")
 plot(t,states(solver),7:7, xlabel="time (s)", ylabel=L"\int u", label="", size=(400,200))
 states(solver)[end][end]  # final control integral
 sum([x[6] for x in states(solver)])/N
+
+n̄ = RobotDynamics.state_diff_size(model)
+n,m = size(model)
+
+G = zeros(n,n̄)
+x = rand(model)[1]
+RobotDynamics.state_diff_jacobian!(G, model, x)
+
+s = RobotDynamics.LieState(UnitQuaternion{Float64},(0,3))
+G2 = zero(G)
+RobotDynamics.state_diff_jacobian!(G2, s, x)
+G2 ≈ G
+
+RobotDynamics.state_diff(model, x, x0) ≈ RobotDynamics.state_diff(s, x, x0)
+
+∇G = zeros(n̄,n̄)
+RobotDynamics.∇²differential!(∇G, model, x, x0)
+
+∇G2 = zero(∇G)
+RobotDynamics.∇²differential!(∇G2, s, x, x0)
+∇G ≈ ∇G2
